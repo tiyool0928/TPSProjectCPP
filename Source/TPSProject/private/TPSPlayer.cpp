@@ -2,6 +2,7 @@
 
 
 #include "TPSPlayer.h"
+#include "Bullet.h"
 #include <GameFramework/SpringArmComponent.h>
 #include <Camera/CameraComponent.h>
 
@@ -35,6 +36,16 @@ ATPSPlayer::ATPSPlayer()
 	bUseControllerRotationYaw = true;
 	//2단 점프
 	JumpMaxCount = 2;
+
+	gunMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("GunMeshComp"));
+	gunMeshComp->SetupAttachment(GetMesh());
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> TempGunMesh(TEXT("SkeletalMesh'/Game/FPWeapon/Mesh/SK_FPGun'"));
+
+	if (TempGunMesh.Succeeded())
+	{
+		gunMeshComp->SetSkeletalMesh(TempGunMesh.Object);
+		gunMeshComp->SetRelativeLocation(FVector(-14, 52, 120));
+	}
 }
 
 // Called when the game starts or when spawned
@@ -67,6 +78,8 @@ void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 	//점프 입력 바인딩
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ATPSPlayer::InputJump);
+	//발사 입력 바인딩
+	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &ATPSPlayer::InputFire);
 }
 
 void ATPSPlayer::Turn(float value)
@@ -94,6 +107,11 @@ void ATPSPlayer::InputJump()
 	Jump();
 }
 
+void ATPSPlayer::InputFire()
+{
+	FTransform firePosition = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
+	GetWorld()->SpawnActor<ABullet>(bulletFactory, firePosition);
+}
 void ATPSPlayer::Move()
 {
 	//플레이어 이동 (등속 운동) = P(결과 위치) = P0(현재 위치) + v(속도) * t(시간);

@@ -53,4 +53,12 @@ public:
 
 	//플레이어 이동 처리
 	void Move();
+	//총 스켈레탈메시
+	UPROPERTY(VisibleAnywhere, Category = GunMesh)
+		class USkeletalMeshComponent* gunMeshComp;
+	//총알 공장
+	UPROPERTY(EditDefaultsOnly, Category = BulletFactory)
+		TSubclassOf<class ABullet> bulletFactory;
+
+	void InputFire();
 };
