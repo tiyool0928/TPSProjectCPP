@@ -78,4 +78,14 @@ public:
 		TSubclassOf<class UUserWidget> sniperUIFactory;
 	//스나이퍼 UI 위젯 인스턴스
 	class UUserWidget* _sniperUI;
+
+	//총알 파편 공장
+	UPROPERTY(EditAnywhere, Category = BulletEffect)
+		class UParticleSystem* bulletEffectFactory;
+
+	//일반 조준 UI
+	UPROPERTY(EditDefaultsOnly, category = SniperUI)
+		TSubclassOf<class UUserWidget> crosshairUIFactory;
+	//크로스헤어 인스턴스
+	class UUserWidget* _crosshairUI;
 };
