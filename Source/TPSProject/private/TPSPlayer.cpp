@@ -3,6 +3,7 @@
 
 #include "TPSPlayer.h"
 #include "Bullet.h"
+#include "EnemyFSM.h"
 #include <GameFramework/SpringArmComponent.h>
 #include <Camera/CameraComponent.h>
 #include <Blueprint/UserWidget.h>
@@ -165,6 +166,13 @@ void ATPSPlayer::InputFire()
 				//F = ma, 맞은 면의 벡터 반대방향으로 물리적용
 				FVector force = -hitInfo.ImpactNormal * hitComp->GetMass() * 500000;
 				hitComp->AddForce(force);
+			}
+			//충돌 대상이 적이면
+			auto enemy = hitInfo.GetActor()->GetDefaultSubobjectByName(TEXT("FSM"));
+			if (enemy)
+			{
+				auto enemyFSM = Cast<UEnemyFSM>(enemy);
+				enemyFSM->OnDamageProcess();
 			}
 		}
 	}
