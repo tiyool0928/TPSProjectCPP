@@ -92,4 +92,10 @@ public:
 	class UUserWidget* _crosshairUI;
 	//달리기 함수
 	void InputRun();
+	//카메라 쉐이크
+	UPROPERTY(EditDefaultsOnly, Category = CameraMotion)
+		TSubclassOf<class UCameraShakeBase> cameraShake;
+
+	UPROPERTY(EditDefaultsOnly, Category = Sound)
+		class USoundBase* bulletSound;
 };

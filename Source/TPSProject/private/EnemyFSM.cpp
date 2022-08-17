@@ -6,6 +6,7 @@
 #include "Enemy.h"
 #include <Kismet/GameplayStatics.h>
 #include <Components/CapsuleComponent.h>
+#include "EnemyAnim.h"
 
 // Sets default values for this component's properties
 UEnemyFSM::UEnemyFSM()
@@ -28,6 +29,8 @@ void UEnemyFSM::BeginPlay()
 	target = Cast<ATPSPlayer>(actor);
 	me = Cast<AEnemy>(GetOwner());
 	
+	//UEnemyAnim* 할당
+	anim = Cast<UEnemyAnim>(me->GetMesh()->GetAnimInstance());
 }
 
 
@@ -65,6 +68,9 @@ void UEnemyFSM::IdleState()
 		//이동상태로 전환
 		mState = EEnemyState::Move;
 		currentTime = 0;
+
+		//애니메이션 상태 동기화
+		anim->animState = mState;
 	}
 }
 void UEnemyFSM::MoveState()
@@ -77,6 +83,11 @@ void UEnemyFSM::MoveState()
 	if (dir.Size() < attackRange)
 	{
 		mState = EEnemyState::Attack;
+		//애니메이션 상태 동기화
+		anim->animState = mState;
+		anim->bAttackPlay = true;
+		//공격 상태 전환 시 대기 시간이 바로 끝나도록 처리
+		currentTime = attackDelayTime;
 	}
 
 }
@@ -87,12 +98,15 @@ void UEnemyFSM::AttackState()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Attack!!"));
 		currentTime = 0;
+		anim->bAttackPlay = true;
 	}
 
 	float distance = FVector::Distance(target->GetActorLocation(), me->GetActorLocation());
 	if (distance > attackRange)
 	{
 		mState = EEnemyState::Move;
+		//애니메이션 상태 동기화
+		anim->animState = mState;
 	}
 }
 void UEnemyFSM::DamageState()
@@ -102,6 +116,7 @@ void UEnemyFSM::DamageState()
 	{
 		mState = EEnemyState::Idle;
 		currentTime = 0;
+		anim->animState = mState;
 	}
 }
 void UEnemyFSM::DieState()
@@ -118,7 +133,7 @@ void UEnemyFSM::DieState()
 	{
 		me->Destroy();
 	}
-	
+	anim->animState = mState;
 }
 
 void UEnemyFSM::OnDamageProcess()

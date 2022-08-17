@@ -67,6 +67,13 @@ ATPSPlayer::ATPSPlayer()
 	//크기 조정
 	sniperGunComp->SetRelativeScale3D(FVector(0.15f));
 	//}
+
+	//총알 사운드
+	ConstructorHelpers::FObjectFinder<USoundBase> tempSound(TEXT("SoundWave'/Game/SniperGun/Rifle'"));
+	if (tempSound.Succeeded())
+	{
+		bulletSound = tempSound.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -148,6 +155,10 @@ void ATPSPlayer::InputJump()
 
 void ATPSPlayer::InputFire()
 {
+	UGameplayStatics::PlaySound2D(GetWorld(), bulletSound);
+	//카메라 쉐이크 재생
+	auto controller = GetWorld()->GetFirstPlayerController();
+	controller->PlayerCameraManager->StartCameraShake(cameraShake);
 	//공격애니메이션 재생
 	auto anim = Cast<UPlayerAnim>(GetMesh()->GetAnimInstance());
 	anim->PlayAttackAnim();
@@ -162,7 +173,7 @@ void ATPSPlayer::InputFire()
 		FVector startPos = tpsCamComp->GetComponentLocation();
 		//종료 위치 (시작 위치 + 바라보는 방향 * 5000)
 		FVector endPos = tpsCamComp->GetComponentLocation() + tpsCamComp->GetForwardVector() * 5000;
-		FHitResult hitInfo;				//충돌 정보
+		FHitResult hitInfo;					//충돌 정보
 		FCollisionQueryParams params;		//충돌 옵션 설정
 		params.AddIgnoredActor(this);		//본인은 충돌 제외
 

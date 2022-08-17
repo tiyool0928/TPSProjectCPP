@@ -65,4 +65,7 @@ public:
 	//아래로 내려가는 속도
 	float dieSpeed = 50.0f;
 
+	//사용 중인 애니메이션 블루프린트
+	UPROPERTY()
+		class UEnemyAnim* anim;
 };
