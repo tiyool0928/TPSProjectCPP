@@ -25,4 +25,10 @@ public:
 	//공격 애니메이션 끝나는 이벤트
 	UFUNCTION(BlueprintCallable, Category = FSMEvent)
 		void OnEndAttackAnimation();
+	//피격 애니메이션 재생
+	UFUNCTION(BlueprintImplementableEvent, Category = FSMEvent)
+		void PlayDamageAnim(FName sectionName);
+	//죽음 상태 애니메이션 종료
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = FSM)
+		bool bDieDone = false;
 };

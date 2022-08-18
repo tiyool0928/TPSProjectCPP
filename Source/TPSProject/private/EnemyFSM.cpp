@@ -121,6 +121,11 @@ void UEnemyFSM::DamageState()
 }
 void UEnemyFSM::DieState()
 {
+	//죽음 애니메이션이 아직 안끝났다면
+	if (anim->bDieDone == false)
+	{
+		return;
+	}
 	//아래로 내려가면서 사라지는 연출
 	//등속운동 P = P0 + vt
 	FVector P0 = me->GetActorLocation();
@@ -142,11 +147,22 @@ void UEnemyFSM::OnDamageProcess()
 	if (hp > 0)
 	{
 		mState = EEnemyState::Damage;
+
+		currentTime = 0;
+		//피격 애니메이션 재생
+		int32 index = FMath::RandRange(0, 1);		//2개 피격 애니메이션 중 랜덤 1
+		FString sectionName = FString::Printf(TEXT("Damage%d"), index);
+		anim->PlayDamageAnim(FName(*sectionName));
 	}
 	else
 	{
+		//죽음으로 전환
 		mState = EEnemyState::Die;
+		//충돌체 비활성화
 		me->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//죽음 재생
+		anim->PlayDamageAnim(TEXT("Die"));
 	}
+	anim->animState = mState;
 }
 
