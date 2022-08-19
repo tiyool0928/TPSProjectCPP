@@ -21,6 +21,9 @@ AEnemy::AEnemy()
 
 	fsm = CreateDefaultSubobject<UEnemyFSM>(TEXT("FSM"));
 
+	//스폰 될 때 자동으로 AIController부터 Possess
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
 	//ConstructorHelpers::FClassFinder<UAnimInstance> tempClass(TEXT("AnimBlueprint'/Game/Blueprints/ABP_Enemy.ABP_Enemy'"));
 	//if (tempClass.Succeeded())
 	//{

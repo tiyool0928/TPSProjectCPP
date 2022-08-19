@@ -68,4 +68,12 @@ public:
 	//사용 중인 애니메이션 블루프린트
 	UPROPERTY()
 		class UEnemyAnim* anim;
+
+	//Enemy를 소유한 AIController
+	UPROPERTY()
+		class AAIController* ai;
+
+	FVector randomPos;			//랜덤위치
+	//랜덤위치 가져오기
+	bool GetRandomPositionInNavMesh(FVector centerLocation, float radius, FVector& dest);
 };
