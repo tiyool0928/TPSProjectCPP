@@ -134,7 +134,7 @@ void UEnemyFSM::AttackState()
 	currentTime += GetWorld()->DeltaTimeSeconds;
 	if (currentTime >= attackDelayTime)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Attack!!"));
+		//UE_LOG(LogTemp, Warning, TEXT("Attack!!"));
 		currentTime = 0;
 		anim->bAttackPlay = true;
 	}

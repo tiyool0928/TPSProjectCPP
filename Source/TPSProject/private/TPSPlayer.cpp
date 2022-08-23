@@ -6,6 +6,7 @@
 #include <Camera/CameraComponent.h>
 #include "PlayerMove.h"
 #include "PlayerFire.h"
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 ATPSPlayer::ATPSPlayer()
@@ -67,13 +68,15 @@ ATPSPlayer::ATPSPlayer()
 	//이동 컴포넌트
 	playerMove = CreateDefaultSubobject<UPlayerMove>(TEXT("PlayerMove"));
 	//공격 컴포넌트
-	playerFire = CreateDefaultSubobject<UPlayerFire>(TEXT("PlayerFire"));
+	//playerFire = CreateDefaultSubobject<UPlayerFire>(TEXT("PlayerFire"));
 }
 
 // Called when the game starts or when spawned
 void ATPSPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	hp = initialHp;
 }
 
 // Called every frame
@@ -87,6 +90,25 @@ void ATPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	
-	playerMove->SetupInputBinding(PlayerInputComponent);
-	playerFire->SetupInputBinding(PlayerInputComponent);
+	onInputBindingDelegate.Broadcast(PlayerInputComponent);
+
+	/*playerMove->SetupInputBinding(PlayerInputComponent);
+	playerFire->SetupInputBinding(PlayerInputComponent);*/
+}
+
+void ATPSPlayer::OnHitEvent()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Damaged!!!!"));
+	hp--;
+	if (hp <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player is Dead!!!"));
+		OnGameOver();
+	}
+}
+
+void ATPSPlayer::OnGameOver_Implementation()
+{
+	//게임 오버 시 일시 정지
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }

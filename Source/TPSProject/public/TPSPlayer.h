@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "TPSPlayer.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FInputBindingDelegate, class UInputComponent*);
+
 UCLASS()
 class TPSPROJECT_API ATPSPlayer : public ACharacter
 {
@@ -14,6 +16,8 @@ class TPSPROJECT_API ATPSPlayer : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ATPSPlayer();
+
+	FInputBindingDelegate onInputBindingDelegate;
 
 protected:
 	// Called when the game starts or when spawned
@@ -45,4 +49,19 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = Component)
 		class UPlayerBaseComponent* playerFire;
+
+	//현재 체력
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Health)
+		int32 hp;
+	//초기 hp값
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Health)
+		int32 initialHp = 10;
+
+	//피격 당했을 때 처리
+	UFUNCTION(BlueprintCallable, Category = Health)
+		void OnHitEvent();
+
+	//게임 종료 이벤트
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = Health)
+		void OnGameOver();
 };
